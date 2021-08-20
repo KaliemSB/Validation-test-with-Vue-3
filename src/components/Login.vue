@@ -5,7 +5,7 @@
         <p class="title">Login</p>
         <p class="subtitle">Junte-se a revolução Solar</p>
       </div>
-      <button class="login-button">
+      <button @click="signinwithgoogle" class="login-button">
         <img class="icon" src="../assets/google.svg" alt="Google">
         <p class="button-text">Faça login com o Google</p>
       </button>
@@ -26,11 +26,14 @@
 </template>
 
 <script>
+import { firebase, auth } from '../services/firebase'
+
 export default {
   data () {
     return {
       email: '',
-      msg: []
+      msg: [],
+      user: {}
     }
   },
   methods: {
@@ -40,6 +43,26 @@ export default {
       } else {
         alert("Insira um endereço de e-mail valido")
       }
+    },
+    async signinwithgoogle() {
+      const provider = new firebase.auth.GoogleAuthProvider();
+
+      const result = await auth.signInWithPopup(provider);
+        if (result.user) {
+          const { displayName, photoURL, uid } = result.user;
+
+          if ( !displayName || !photoURL ) {
+            throw new Error('missing information from Google account')
+          }
+
+          this.user = ({
+            id: uid,
+            name: displayName,
+            avatar: photoURL
+          })
+        }
+
+      console.log(this.user)
     }
   }
 }
