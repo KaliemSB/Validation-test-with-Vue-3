@@ -23,10 +23,12 @@
       </form>
     </div>
   </div>
+  <Container />
 </template>
 
 <script>
 import { firebase, auth } from '../services/firebase'
+import Container from '../components/Container.vue'
 
 export default {
   data () {
@@ -35,6 +37,9 @@ export default {
       msg: [],
       user: {}
     }
+  },
+  components: {
+    Container,
   },
   methods: {
     validateEmail() {
@@ -55,14 +60,14 @@ export default {
             throw new Error('missing information from Google account')
           }
 
-          this.user = ({
+          this.$store.user = ({
             id: uid,
             name: displayName,
             avatar: photoURL
           })
         }
 
-      console.log(this.user)
+      this.$router.push('Home')
     }
   }
 }
